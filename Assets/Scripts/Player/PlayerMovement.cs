@@ -3,45 +3,10 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
 {
-    //[SerializeField] private Rigidbody rb;
-    //[SerializeField] private float maxSpeed = 10;
-    //[SerializeField] private float speed = 1;
-
-    //public void Move()
-    //{
-    //    // Get/Adjust camera's forward axis
-    //    Vector3 camFWD = Camera.main.transform.forward;
-    //    camFWD.y = 0;
-    //    camFWD.Normalize();
-
-    //    // Get/Adjust camera's right axis
-    //    Vector3 camRht = Camera.main.transform.right;
-    //    camRht.y = 0;
-    //    camRht.Normalize();
-
-    //    // Store inp values
-    //    Vector2 inp = InputManager.Instance.MoveVec;
-
-    //    // Calculate plannar input
-    //    Vector3 planInp = Vector3.ClampMagnitude((camFWD * inp.y) + (camRht * inp.x), 1.0f);
-    //    // Adds a force to the cart
-    //    rb.AddForce(planInp * speed * Time.deltaTime, ForceMode.Impulse);
-
-    //    // Store/Clamp Speed/Velocity
-    //    float capY = rb.linearVelocity.y;
-    //    Vector3 vel = rb.linearVelocity;
-    //    vel = Vector3.ClampMagnitude(vel, maxSpeed);
-    //    vel.y = capY;
-
-    //    // actually sets the velocity to the clamped (adjusted) velocity, so we don't over accelerate
-    //    rb.linearVelocity = vel;
-    //}
-
     [Seperator]
     [SerializeField] private float motorForce;
     [SerializeField] private float breakForce;
     [SerializeField] private float maxSteerAng;
-    [SerializeField] private float maxSpeed;
 
     [Seperator]
     [Header("Colliders")]
@@ -59,7 +24,6 @@ public class PlayerMovement : MonoBehaviour
 
     private float currSteerAng;
     private float currentbreakForce;
-    private float currentSpeed;
     private bool isBreaking;
     private Vector2 inp;
 
@@ -81,15 +45,6 @@ public class PlayerMovement : MonoBehaviour
     {
         isBreaking = InputManager.Instance.IsBreaking;
         inp = InputManager.Instance.MoveVec;
-
-        if (inp.y > 0 && currentSpeed < maxSpeed)
-        {
-            currentSpeed += Time.deltaTime;
-        }
-        else if (inp.y <= 0)
-        {
-            currentSpeed -= Time.deltaTime;
-        }
     }
 
     private void HandleMotor()
@@ -98,6 +53,8 @@ public class PlayerMovement : MonoBehaviour
         frontLeftCollider.motorTorque = inp.y * motorForce;
         frontRightCollider.motorTorque = inp.y * motorForce;
 
+        // Need to have a consistent check back to is braking
+        // since braking is can be on or off meaning we want the car to "slow" down
         currentbreakForce = isBreaking ? breakForce : 0f;
         ApplyBraking();
     }

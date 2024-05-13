@@ -49,4 +49,9 @@ public class PlayerBase : MonoBehaviour, ICheckpoint
         lastCheckpointPos = _transform.position;
         lastCheckpoint = _check;
     }
+
+    public void SendToCheckpoint()
+    {
+        TeleportToLastCheckpoint();
+    }
 }
