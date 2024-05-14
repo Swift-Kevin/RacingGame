@@ -9,6 +9,8 @@ public class PlayerCamera : MonoBehaviour
     private float yRot;
     private float xRot;
 
+    public GameObject Cam;
+
     public void Look()
     {
         Vector2 lookVec = InputManager.Instance.LookVec;

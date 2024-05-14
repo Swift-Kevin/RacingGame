@@ -157,6 +157,34 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""UI"",
+            ""id"": ""6f706bce-408d-4a50-a212-9a5b0dec442a"",
+            ""actions"": [
+                {
+                    ""name"": ""PauseToggle"",
+                    ""type"": ""Button"",
+                    ""id"": ""bc514ac1-3be8-4092-9a05-3a3aa2401593"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""4463ad51-caca-431a-88df-f3f830f04d72"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PauseToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -166,11 +194,15 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         m_General_Movement = m_General.FindAction("Movement", throwIfNotFound: true);
         m_General_Looking = m_General.FindAction("Looking", throwIfNotFound: true);
         m_General_Breaking = m_General.FindAction("Breaking", throwIfNotFound: true);
+        // UI
+        m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
+        m_UI_PauseToggle = m_UI.FindAction("PauseToggle", throwIfNotFound: true);
     }
 
     ~@PlayerInputs()
     {
         Debug.Assert(!m_General.enabled, "This will cause a leak and performance issues, PlayerInputs.General.Disable() has not been called.");
+        Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, PlayerInputs.UI.Disable() has not been called.");
     }
 
     public void Dispose()
@@ -290,10 +322,60 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         }
     }
     public GeneralActions @General => new GeneralActions(this);
+
+    // UI
+    private readonly InputActionMap m_UI;
+    private List<IUIActions> m_UIActionsCallbackInterfaces = new List<IUIActions>();
+    private readonly InputAction m_UI_PauseToggle;
+    public struct UIActions
+    {
+        private @PlayerInputs m_Wrapper;
+        public UIActions(@PlayerInputs wrapper) { m_Wrapper = wrapper; }
+        public InputAction @PauseToggle => m_Wrapper.m_UI_PauseToggle;
+        public InputActionMap Get() { return m_Wrapper.m_UI; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(UIActions set) { return set.Get(); }
+        public void AddCallbacks(IUIActions instance)
+        {
+            if (instance == null || m_Wrapper.m_UIActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_UIActionsCallbackInterfaces.Add(instance);
+            @PauseToggle.started += instance.OnPauseToggle;
+            @PauseToggle.performed += instance.OnPauseToggle;
+            @PauseToggle.canceled += instance.OnPauseToggle;
+        }
+
+        private void UnregisterCallbacks(IUIActions instance)
+        {
+            @PauseToggle.started -= instance.OnPauseToggle;
+            @PauseToggle.performed -= instance.OnPauseToggle;
+            @PauseToggle.canceled -= instance.OnPauseToggle;
+        }
+
+        public void RemoveCallbacks(IUIActions instance)
+        {
+            if (m_Wrapper.m_UIActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IUIActions instance)
+        {
+            foreach (var item in m_Wrapper.m_UIActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_UIActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public UIActions @UI => new UIActions(this);
     public interface IGeneralActions
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnLooking(InputAction.CallbackContext context);
         void OnBreaking(InputAction.CallbackContext context);
+    }
+    public interface IUIActions
+    {
+        void OnPauseToggle(InputAction.CallbackContext context);
     }
 }

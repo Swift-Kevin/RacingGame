@@ -16,8 +16,20 @@ public class InputManager : MonoBehaviour
     {
         Instance = this;
         playerInputs = new PlayerInputs();
-        playerInputs.General.Enable();
+        playerInputs.Enable();
     }
 
+    private void Start()
+    {
+        playerInputs.UI.PauseToggle.performed += PauseToggle_performed;
+    }
 
+    private void PauseToggle_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        if (UIManager.Instance.isInGame)
+        {
+            UIManager.Instance.TogglePauseMenu();
+            Debug.Log("toggled");
+        }
+    }
 }

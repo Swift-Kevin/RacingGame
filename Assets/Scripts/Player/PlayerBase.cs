@@ -1,8 +1,9 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerCamera), typeof(PlayerMovement))]
-public class PlayerBase : MonoBehaviour, ICheckpoint
+public class PlayerBase : NetworkBehaviour, ICheckpoint
 {
     [SerializeField] private PlayerCamera cameraScript;
     [SerializeField] private PlayerMovement movementScript;
@@ -11,13 +12,22 @@ public class PlayerBase : MonoBehaviour, ICheckpoint
     private Vector3 lastCheckpointPos;
     private Checkpoint lastCheckpoint;
 
-    private void Start()
+    public override void OnNetworkSpawn()
     {
-        lastCheckpointPos = GameManager.Instance.StartPoint;
+        if (IsLocalPlayer)
+        {
+            lastCheckpointPos = GameManager.Instance.StartPoint;
+            return;
+        }
+
+        cameraScript.Cam.SetActive(false);
     }
 
     void Update()
     {
+        if (!IsOwner)
+            return;
+
         cameraScript.Look();
 
         // If the up directions are facing away from each other
@@ -40,6 +50,9 @@ public class PlayerBase : MonoBehaviour, ICheckpoint
 
     private void FixedUpdate()
     {
+        if (!IsOwner)
+            return;
+
         movementScript.Move();
     }
 
