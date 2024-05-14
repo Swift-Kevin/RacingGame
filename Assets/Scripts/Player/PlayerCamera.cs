@@ -2,14 +2,11 @@ using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour
 {
-    [SerializeField] private Transform cameraPivot;
     [SerializeField] private Transform playerObj;
     [SerializeField] private float camLookSpeed = 10f;
 
     private float yRot;
     private float xRot;
-
-    public GameObject Cam;
 
     public void Look()
     {
@@ -24,6 +21,6 @@ public class PlayerCamera : MonoBehaviour
         xRot = Mathf.Clamp(xRot, -85, 85);
 
         //cameraPivot.localRotation = Quaternion.Euler(xRot, 0, 0);
-        cameraPivot.localRotation = Quaternion.Euler(0, yRot, 0);
+        transform.localRotation = Quaternion.Euler(0, yRot, 0);
     }
 }

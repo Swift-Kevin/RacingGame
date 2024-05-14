@@ -2,12 +2,14 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerCamera), typeof(PlayerMovement))]
+[RequireComponent(typeof(PlayerMovement))]
 public class PlayerBase : NetworkBehaviour, ICheckpoint
 {
     [SerializeField] private PlayerCamera cameraScript;
     [SerializeField] private PlayerMovement movementScript;
     [SerializeField] private Rigidbody rb;
+    [SerializeField] private CarFollower carFollowScript;
+    [SerializeField] private GameObject camPivot;
 
     private Vector3 lastCheckpointPos;
     private Checkpoint lastCheckpoint;
@@ -17,10 +19,10 @@ public class PlayerBase : NetworkBehaviour, ICheckpoint
         if (IsLocalPlayer)
         {
             lastCheckpointPos = GameManager.Instance.StartPoint;
+            camPivot.transform.parent = null;
+
             return;
         }
-
-        cameraScript.Cam.SetActive(false);
     }
 
     void Update()
@@ -29,6 +31,7 @@ public class PlayerBase : NetworkBehaviour, ICheckpoint
             return;
 
         cameraScript.Look();
+        carFollowScript.UpdateCam(transform.position);
 
         // If the up directions are facing away from each other
         if (Vector3.Dot(transform.up, Vector3.up) < 0)
