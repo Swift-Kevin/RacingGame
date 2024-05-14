@@ -170,8 +170,8 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 1
-  m_Color: {r: 0.055233337, g: 0.020489655, b: 0.17610055, a: 1}
-  m_Intensity: 25
+  m_Color: {r: 0, g: 0.49434638, b: 1, a: 1}
+  m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -4897,6 +4897,8 @@ MonoBehaviour:
   btn_Quit: {fileID: 1632023897}
   pauseMenu: {fileID: 753307498}
   multiplayerMenu: {fileID: 866709508}
+  isInGame: 0
+  isPauseOpened: 0
 --- !u!1 &1300071143
 GameObject:
   m_ObjectHideFlags: 0
