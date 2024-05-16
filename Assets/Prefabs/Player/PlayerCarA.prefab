@@ -1083,8 +1083,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3952848717422900580}
   - component: {fileID: 8541359524892591784}
-  - component: {fileID: 3467735645441765056}
   - component: {fileID: 1322563015220804794}
+  - component: {fileID: 3467735645441765056}
   - component: {fileID: 7474422951575964747}
   - component: {fileID: 1089586340465750029}
   - component: {fileID: 4898394677740126241}
@@ -1092,7 +1092,7 @@ GameObject:
   - component: {fileID: 4937101157044907533}
   m_Layer: 0
   m_Name: PlayerCarA
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1128,33 +1128,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 474fa082b3ecff54ab972cc43588f389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraPivot: {fileID: 701631199671137413}
   playerObj: {fileID: 3952848717422900580}
   camLookSpeed: 10
-  Cam: {fileID: 132142333617929130}
---- !u!114 &3467735645441765056
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9121340616139201959}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4745f7b57399d8d48b6ddd4668a48010, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  motorForce: 1000
-  breakForce: 2000
-  maxSteerAng: 30
-  frontLeftCollider: {fileID: 5849395745857898375}
-  frontRightCollider: {fileID: 7984029326455003015}
-  backLeftCollider: {fileID: 6965774435633144507}
-  backRightCollider: {fileID: 6457266499343188725}
-  frontLeftTransform: {fileID: 784868501678383241}
-  frontRightTransform: {fileID: 972389059040330221}
-  backLeftTransform: {fileID: 2177162947664291819}
-  backRightTransform: {fileID: 3693249647813692489}
 --- !u!114 &1322563015220804794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1167,7 +1142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3023957872
+  GlobalObjectIdHash: 1773373364
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -1176,6 +1151,30 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &3467735645441765056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9121340616139201959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4745f7b57399d8d48b6ddd4668a48010, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 0}
+  motorForce: 1000
+  breakForce: 2000
+  maxSteerAng: 30
+  frontLeftCollider: {fileID: 5849395745857898375}
+  frontRightCollider: {fileID: 7984029326455003015}
+  backLeftCollider: {fileID: 6965774435633144507}
+  backRightCollider: {fileID: 6457266499343188725}
+  frontLeftTransform: {fileID: 784868501678383241}
+  frontRightTransform: {fileID: 972389059040330221}
+  backLeftTransform: {fileID: 2177162947664291819}
+  backRightTransform: {fileID: 3693249647813692489}
 --- !u!114 &7474422951575964747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1190,7 +1189,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraScript: {fileID: 8541359524892591784}
   movementScript: {fileID: 3467735645441765056}
-  rb: {fileID: 4898394677740126241}
+  carFollowScript: {fileID: 0}
+  camPivot: {fileID: 0}
 --- !u!65 &1089586340465750029
 BoxCollider:
   m_ObjectHideFlags: 0

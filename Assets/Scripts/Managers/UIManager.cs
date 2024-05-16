@@ -10,6 +10,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button btn_Quit;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject multiplayerMenu;
+    [SerializeField] private GameObject playerUIObj;
+    [SerializeField] private PlayerUI playerUIScript;
+
+    public PlayerUI PlayerUIScript => playerUIScript;
 
     public bool isInGame = false;
     public bool isPauseOpened = false;
@@ -34,11 +38,13 @@ public class UIManager : MonoBehaviour
     {
         pauseMenu.SetActive(false);
         multiplayerMenu.SetActive(false);
+        playerUIObj.SetActive(false);
     }
 
     public void SetIsInGame(bool _status)
     {
         isInGame = _status;
+        DisplayPlayerUI();
     }
 
     public void DisplayMultiplayerMenu()
@@ -53,11 +59,20 @@ public class UIManager : MonoBehaviour
         pauseMenu?.SetActive(true);
     }
 
+    private void DisplayPlayerUI()
+    {
+        HideAllMenus();
+        playerUIObj?.SetActive(true);
+    }
+
     public void TogglePauseMenu()
     {
+        if (!isInGame)
+            return;
+
         if (pauseMenu.activeSelf)
         {
-            HideAllMenus();
+            DisplayPlayerUI();
             GameManager.Instance.MouseLockHide();
             isPauseOpened = false;
         }

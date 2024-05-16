@@ -1,8 +1,11 @@
+using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : NetworkBehaviour
 {
+    [SerializeField] private Rigidbody rb;
+    
     [Seperator]
     [SerializeField] private float motorForce;
     [SerializeField] private float breakForce;
@@ -30,15 +33,18 @@ public class PlayerMovement : MonoBehaviour
     public void Move()
     {
         GetInput();
-        HandleMotor();
-        HandleSteering();
-        UpdateWheels();
+        HandleMotorRpc(inp, isBreaking);
+        HandleSteeringRpc(inp);
+        UpdateWheelsRpc();
     }
 
-    public void ForceStop()
+    [Rpc(SendTo.Server)]
+    public void ForceStopRpc()
     {
         frontLeftCollider.motorTorque = 0;
         frontRightCollider.motorTorque = 0;
+        rb.angularVelocity = Vector3.zero;
+        rb.linearVelocity = Vector3.zero;
     }
 
     private void GetInput()
@@ -47,39 +53,43 @@ public class PlayerMovement : MonoBehaviour
         inp = InputManager.Instance.MoveVec;
     }
 
-    private void HandleMotor()
+    [Rpc(SendTo.Server)]
+    private void HandleMotorRpc(Vector2 _inp, bool _breaking)
     {
         // Update Colliders torque
-        frontLeftCollider.motorTorque = inp.y * motorForce;
-        frontRightCollider.motorTorque = inp.y * motorForce;
+        frontLeftCollider.motorTorque = _inp.y * motorForce;
+        frontRightCollider.motorTorque = _inp.y * motorForce;
 
         // Need to have a consistent check back to is braking
         // since braking is can be on or off meaning we want the car to "slow" down
-        currentbreakForce = isBreaking ? breakForce : 0f;
-        ApplyBraking();
+        currentbreakForce = _breaking ? breakForce : 0f;
+        ApplyBrakingRpc(currentbreakForce);
     }
 
-    private void ApplyBraking()
+    [Rpc(SendTo.Server)]
+    private void ApplyBrakingRpc(float _cbf)
     {
         // Update Front Brakes
-        frontRightCollider.brakeTorque = currentbreakForce;
-        frontLeftCollider.brakeTorque = currentbreakForce;
+        frontRightCollider.brakeTorque = _cbf;
+        frontLeftCollider.brakeTorque = _cbf;
 
         // Update BackBrakes
-        backRightCollider.brakeTorque = currentbreakForce;
-        backLeftCollider.brakeTorque = currentbreakForce;
+        backRightCollider.brakeTorque = _cbf;
+        backLeftCollider.brakeTorque = _cbf;
     }
 
-    private void HandleSteering()
+    [Rpc(SendTo.Server)]
+    private void HandleSteeringRpc(Vector2 _inp)
     {
-        currSteerAng = maxSteerAng * inp.x;
+        currSteerAng = maxSteerAng * _inp.x;
 
         // Update steering angle
         frontLeftCollider.steerAngle = currSteerAng;
         frontRightCollider.steerAngle = currSteerAng;
     }
 
-    private void UpdateWheels()
+    [Rpc(SendTo.Server)]
+    private void UpdateWheelsRpc()
     {
         // Front wheels
         UpdateWheel(frontRightCollider, frontRightTransform);
