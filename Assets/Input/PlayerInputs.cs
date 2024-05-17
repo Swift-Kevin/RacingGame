@@ -63,6 +63,15 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CarHonk"",
+                    ""type"": ""Button"",
+                    ""id"": ""f8e93273-c0c2-488b-8565-618872d2ab69"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -175,6 +184,17 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""action"": ""Sprinting"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""21bf6037-4630-4f30-ae52-ba139f1fd332"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CarHonk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -215,6 +235,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         m_General_Looking = m_General.FindAction("Looking", throwIfNotFound: true);
         m_General_Breaking = m_General.FindAction("Breaking", throwIfNotFound: true);
         m_General_Sprinting = m_General.FindAction("Sprinting", throwIfNotFound: true);
+        m_General_CarHonk = m_General.FindAction("CarHonk", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_PauseToggle = m_UI.FindAction("PauseToggle", throwIfNotFound: true);
@@ -289,6 +310,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_General_Looking;
     private readonly InputAction m_General_Breaking;
     private readonly InputAction m_General_Sprinting;
+    private readonly InputAction m_General_CarHonk;
     public struct GeneralActions
     {
         private @PlayerInputs m_Wrapper;
@@ -297,6 +319,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         public InputAction @Looking => m_Wrapper.m_General_Looking;
         public InputAction @Breaking => m_Wrapper.m_General_Breaking;
         public InputAction @Sprinting => m_Wrapper.m_General_Sprinting;
+        public InputAction @CarHonk => m_Wrapper.m_General_CarHonk;
         public InputActionMap Get() { return m_Wrapper.m_General; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -318,6 +341,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @Sprinting.started += instance.OnSprinting;
             @Sprinting.performed += instance.OnSprinting;
             @Sprinting.canceled += instance.OnSprinting;
+            @CarHonk.started += instance.OnCarHonk;
+            @CarHonk.performed += instance.OnCarHonk;
+            @CarHonk.canceled += instance.OnCarHonk;
         }
 
         private void UnregisterCallbacks(IGeneralActions instance)
@@ -334,6 +360,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @Sprinting.started -= instance.OnSprinting;
             @Sprinting.performed -= instance.OnSprinting;
             @Sprinting.canceled -= instance.OnSprinting;
+            @CarHonk.started -= instance.OnCarHonk;
+            @CarHonk.performed -= instance.OnCarHonk;
+            @CarHonk.canceled -= instance.OnCarHonk;
         }
 
         public void RemoveCallbacks(IGeneralActions instance)
@@ -403,6 +432,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         void OnLooking(InputAction.CallbackContext context);
         void OnBreaking(InputAction.CallbackContext context);
         void OnSprinting(InputAction.CallbackContext context);
+        void OnCarHonk(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

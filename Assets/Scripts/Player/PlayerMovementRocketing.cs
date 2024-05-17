@@ -55,7 +55,7 @@ public class PlayerMovementRocketing : NetworkBehaviour
 
     public bool RocketCheck()
     {
-        isRocketing = InputManager.Instance.IsRocketing;
+        isRocketing = InputManager.Instance.IsRocketing && rocketFuel.IsValid;
 
         if (!isRocketing || !rocketFuel.IsMaxed || !rechargeWaitTimer.RunTimer)
         {

@@ -1,5 +1,6 @@
 using System;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -37,12 +38,16 @@ public class PlayerMovement : NetworkBehaviour
     {
         GetInput();
         HandleMotorRpc(inp, isBreaking, isRocketing);
+        HandleRocketing();
         HandleSteeringRpc(inp);
         UpdateWheelsRpc();
+    }
 
-        if (rocketScript.CanRocket)
+    private void HandleRocketing()
+    {
+        if (isRocketing && rocketScript.CanRocket)
         {
-            rocketScript.UpdateRocketVisualsRpc(isRocketing);
+            rocketScript.RocketForce();
         }
     }
 
@@ -75,10 +80,7 @@ public class PlayerMovement : NetworkBehaviour
             rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, Vector3.zero, Time.deltaTime / 2);
         }
 
-        if (_rocketing && rocketScript.CanRocket)
-        {
-            rocketScript.RocketForce();
-        }
+        rocketScript.UpdateRocketVisualsRpc(_rocketing);
 
         // Need to have a consistent check back to is braking
         // since braking is can be on or off meaning we want the car to "slow" down
