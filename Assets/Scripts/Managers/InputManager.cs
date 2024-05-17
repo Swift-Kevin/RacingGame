@@ -11,6 +11,7 @@ public class InputManager : MonoBehaviour
     public Vector2 MoveVec => Actions.Movement.ReadValue<Vector2>();
     public Vector2 LookVec => Actions.Looking.ReadValue<Vector2>();
     public bool IsBreaking => Actions.Breaking.IsPressed();
+    public bool IsRocketing => Actions.Sprinting.IsPressed();
 
     private void Awake()
     {

@@ -12,8 +12,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject multiplayerMenu;
     [SerializeField] private GameObject playerUIObj;
     [SerializeField] private PlayerUI playerUIScript;
+    [SerializeField] private RocketChargeUI rocketUIScript;
 
     public PlayerUI PlayerUIScript => playerUIScript;
+    public RocketChargeUI RocketUIScript => rocketUIScript;
 
     public bool isInGame = false;
     public bool isPauseOpened = false;

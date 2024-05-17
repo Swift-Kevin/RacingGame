@@ -268,7 +268,7 @@ public class ConnectionManager : MonoBehaviour
     {
         try
         {
-            await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId);
+            //await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId);
         }
         catch (LobbyServiceException e)
         {

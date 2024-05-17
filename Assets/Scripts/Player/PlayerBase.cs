@@ -10,6 +10,7 @@ public class PlayerBase : NetworkBehaviour, ICheckpoint
     [SerializeField] private PlayerMovement movementScript;
     [SerializeField] private CarFollower carFollowScript;
     [SerializeField] private GameObject camPivot;
+    [SerializeField] private PlayerFlipOver flipUIScript;
 
     [Seperator]
     [SerializeField] private CustomTimer flippedOverTimer;
@@ -26,7 +27,7 @@ public class PlayerBase : NetworkBehaviour, ICheckpoint
             lastCheckpointPos = GameManager.Instance.StartPoint;
             camPivot.transform.parent = null;
 
-            flippedOverTimer.OnStart += () => { UIManager.Instance.PlayerUIScript.ToggleFlipTextObj(true); };
+            flippedOverTimer.OnStart += () => { flipUIScript.ToggleFlipTextObj(true); };
             flippedOverTimer.OnTick += UpdateFlipUI;
             flippedOverTimer.OnEnd += FlipCar;
 
@@ -38,7 +39,7 @@ public class PlayerBase : NetworkBehaviour, ICheckpoint
     {
         base.OnNetworkDespawn();
 
-        flippedOverTimer.OnStart -= () => { UIManager.Instance.PlayerUIScript.ToggleFlipTextObj(true); };
+        flippedOverTimer.OnStart -= () => { flipUIScript.ToggleFlipTextObj(true); };
         flippedOverTimer.OnTick -= UpdateFlipUI;
         flippedOverTimer.OnEnd -= FlipCar;
     }
@@ -57,7 +58,7 @@ public class PlayerBase : NetworkBehaviour, ICheckpoint
             {
                 TeleportToLastCheckpointRpc();
                 movementScript.ForceStopRpc();
-                UIManager.Instance.PlayerUIScript.ToggleFlipTextObj(false);
+                flipUIScript.ToggleFlipTextObj(false);
             }
         }
     }
@@ -123,7 +124,8 @@ public class PlayerBase : NetworkBehaviour, ICheckpoint
         else if (!isPlayerFlipped && flippedOverTimer.RunTimer)
         {
             flippedOverTimer.StopTimer();
-            UIManager.Instance.PlayerUIScript.UpdateFlipTimerText(0);
+            flipUIScript.UpdateFlipTimerText(0);
+            flipUIScript.ToggleFlipTextObj(false);
         }
     }
 
@@ -131,11 +133,11 @@ public class PlayerBase : NetworkBehaviour, ICheckpoint
     {
         FlipPlayerCarRpc();
         movementScript.ForceStopRpc();
-        UIManager.Instance.PlayerUIScript.ToggleFlipTextObj(false);
+        flipUIScript.ToggleFlipTextObj(false);
     }
 
     private void UpdateFlipUI()
     {
-        UIManager.Instance.PlayerUIScript.UpdateFlipTimerText(flippedOverTimer.RemainingTime);
+        flipUIScript.UpdateFlipTimerText(flippedOverTimer.Percentage);
     }
 }

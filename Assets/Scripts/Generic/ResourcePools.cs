@@ -13,3 +13,8 @@ public class HealthPool : Resource
 public class DamagePool : Resource
 {
 }
+
+[System.Serializable]
+public class RocketFuelPool : Resource
+{
+}

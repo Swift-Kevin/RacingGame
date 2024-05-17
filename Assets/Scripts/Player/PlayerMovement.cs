@@ -1,3 +1,4 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -5,7 +6,8 @@ using UnityEngine;
 public class PlayerMovement : NetworkBehaviour
 {
     [SerializeField] private Rigidbody rb;
-    
+    [SerializeField] private PlayerMovementRocketing rocketScript;
+
     [Seperator]
     [SerializeField] private float motorForce;
     [SerializeField] private float breakForce;
@@ -28,14 +30,20 @@ public class PlayerMovement : NetworkBehaviour
     private float currSteerAng;
     private float currentbreakForce;
     private bool isBreaking;
+    private bool isRocketing;
     private Vector2 inp;
 
     public void Move()
     {
         GetInput();
-        HandleMotorRpc(inp, isBreaking);
+        HandleMotorRpc(inp, isBreaking, isRocketing);
         HandleSteeringRpc(inp);
         UpdateWheelsRpc();
+
+        if (rocketScript.CanRocket)
+        {
+            rocketScript.UpdateRocketVisualsRpc(isRocketing);
+        }
     }
 
     [Rpc(SendTo.Server)]
@@ -51,14 +59,26 @@ public class PlayerMovement : NetworkBehaviour
     {
         isBreaking = InputManager.Instance.IsBreaking;
         inp = InputManager.Instance.MoveVec;
+        isRocketing = rocketScript.RocketCheck();
     }
 
     [Rpc(SendTo.Server)]
-    private void HandleMotorRpc(Vector2 _inp, bool _breaking)
+    private void HandleMotorRpc(Vector2 _inp, bool _breaking, bool _rocketing)
     {
         // Update Colliders torque
         frontLeftCollider.motorTorque = _inp.y * motorForce;
         frontRightCollider.motorTorque = _inp.y * motorForce;
+
+        if (Mathf.Abs(inp.y) == 0f)
+        {
+            rb.angularVelocity = Vector3.Lerp(rb.angularVelocity, Vector3.zero, Time.deltaTime / 2);
+            rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, Vector3.zero, Time.deltaTime / 2);
+        }
+
+        if (_rocketing && rocketScript.CanRocket)
+        {
+            rocketScript.RocketForce();
+        }
 
         // Need to have a consistent check back to is braking
         // since braking is can be on or off meaning we want the car to "slow" down

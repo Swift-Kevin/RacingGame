@@ -54,6 +54,15 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Sprinting"",
+                    ""type"": ""Button"",
+                    ""id"": ""f3228199-2239-45e0-b23b-dba0c1a4cf93"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -155,6 +164,17 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""action"": ""Breaking"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cc3bcaf2-656d-49f3-80be-99ed9b258dca"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sprinting"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -194,6 +214,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         m_General_Movement = m_General.FindAction("Movement", throwIfNotFound: true);
         m_General_Looking = m_General.FindAction("Looking", throwIfNotFound: true);
         m_General_Breaking = m_General.FindAction("Breaking", throwIfNotFound: true);
+        m_General_Sprinting = m_General.FindAction("Sprinting", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_PauseToggle = m_UI.FindAction("PauseToggle", throwIfNotFound: true);
@@ -267,6 +288,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_General_Movement;
     private readonly InputAction m_General_Looking;
     private readonly InputAction m_General_Breaking;
+    private readonly InputAction m_General_Sprinting;
     public struct GeneralActions
     {
         private @PlayerInputs m_Wrapper;
@@ -274,6 +296,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_General_Movement;
         public InputAction @Looking => m_Wrapper.m_General_Looking;
         public InputAction @Breaking => m_Wrapper.m_General_Breaking;
+        public InputAction @Sprinting => m_Wrapper.m_General_Sprinting;
         public InputActionMap Get() { return m_Wrapper.m_General; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -292,6 +315,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @Breaking.started += instance.OnBreaking;
             @Breaking.performed += instance.OnBreaking;
             @Breaking.canceled += instance.OnBreaking;
+            @Sprinting.started += instance.OnSprinting;
+            @Sprinting.performed += instance.OnSprinting;
+            @Sprinting.canceled += instance.OnSprinting;
         }
 
         private void UnregisterCallbacks(IGeneralActions instance)
@@ -305,6 +331,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @Breaking.started -= instance.OnBreaking;
             @Breaking.performed -= instance.OnBreaking;
             @Breaking.canceled -= instance.OnBreaking;
+            @Sprinting.started -= instance.OnSprinting;
+            @Sprinting.performed -= instance.OnSprinting;
+            @Sprinting.canceled -= instance.OnSprinting;
         }
 
         public void RemoveCallbacks(IGeneralActions instance)
@@ -373,6 +402,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnLooking(InputAction.CallbackContext context);
         void OnBreaking(InputAction.CallbackContext context);
+        void OnSprinting(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
