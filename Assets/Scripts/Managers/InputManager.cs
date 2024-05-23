@@ -12,6 +12,7 @@ public class InputManager : MonoBehaviour
     public Vector2 LookVec => Actions.Looking.ReadValue<Vector2>();
     public bool IsBreaking => Actions.Breaking.IsPressed();
     public bool IsRocketing => Actions.Sprinting.IsPressed();
+    public bool IsHonking => Actions.CarHonk.IsInProgress();
 
     private void Awake()
     {

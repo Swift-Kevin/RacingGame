@@ -34,7 +34,7 @@ public class PlayerColor : NetworkBehaviour
         if (IsOwner)
         {
             _index = 0;
-            CommitNetworkColorServerRpc(_index);
+            CommitNetworkColorRpc(_index);
         }
         else
         {
@@ -43,7 +43,7 @@ public class PlayerColor : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    private void CommitNetworkColorServerRpc(int color)
+    private void CommitNetworkColorRpc(int color)
     {
         _netMatIdx.Value = color;
     }
@@ -55,6 +55,6 @@ public class PlayerColor : NetworkBehaviour
             return;
         }
 
-        CommitNetworkColorServerRpc(matIdx);
+        CommitNetworkColorRpc(matIdx);
     }
 }

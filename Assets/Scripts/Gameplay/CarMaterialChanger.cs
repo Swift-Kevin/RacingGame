@@ -14,10 +14,3 @@ public class CarMaterialChanger : MonoBehaviour
         }
     }
 }
-
-public interface IStation {
-
-    public int GetIndex();
-
-}
-

@@ -6,13 +6,19 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
-    [SerializeField] private NetworkingUI networkingScript;
+
     [SerializeField] private Button btn_Quit;
-    [SerializeField] private GameObject pauseMenu;
-    [SerializeField] private GameObject multiplayerMenu;
-    [SerializeField] private GameObject playerUIObj;
+    
+    [Seperator]
+    [SerializeField] private GameObject objPauseUI;
+    [SerializeField] private GameObject objNetworkUI;
+    [SerializeField] private GameObject objPlayerUI;
+    [SerializeField] private GameObject objOptionsUI;
+    
+    [Seperator]
     [SerializeField] private PlayerUI playerUIScript;
     [SerializeField] private RocketChargeUI rocketUIScript;
+    [SerializeField] private NetworkingUI networkingScript;
 
     public PlayerUI PlayerUIScript => playerUIScript;
     public RocketChargeUI RocketUIScript => rocketUIScript;
@@ -30,7 +36,6 @@ public class UIManager : MonoBehaviour
         btn_Quit.onClick.AddListener(QuitButtonPressed);
     }
 
-
     private void QuitButtonPressed()
     {
         GameManager.Instance.QuitApp();
@@ -38,9 +43,10 @@ public class UIManager : MonoBehaviour
 
     public void HideAllMenus()
     {
-        pauseMenu.SetActive(false);
-        multiplayerMenu.SetActive(false);
-        playerUIObj.SetActive(false);
+        objPauseUI.SetActive(false);
+        objNetworkUI.SetActive(false);
+        objPlayerUI.SetActive(false);
+        objOptionsUI.SetActive(false);
     }
 
     public void SetIsInGame(bool _status)
@@ -52,19 +58,23 @@ public class UIManager : MonoBehaviour
     public void DisplayMultiplayerMenu()
     {
         HideAllMenus();
-        multiplayerMenu?.SetActive(true);
+        objNetworkUI?.SetActive(true);
     }
 
     private void DisplayPauseMenu()
     {
         HideAllMenus();
-        pauseMenu?.SetActive(true);
+        objPauseUI?.SetActive(true);
+        GameManager.Instance.MouseUnlockShow();
+        isPauseOpened = true;
     }
 
     private void DisplayPlayerUI()
     {
         HideAllMenus();
-        playerUIObj?.SetActive(true);
+        objPlayerUI?.SetActive(true);
+        GameManager.Instance.MouseLockHide();
+        isPauseOpened = false;
     }
 
     public void TogglePauseMenu()
@@ -72,17 +82,19 @@ public class UIManager : MonoBehaviour
         if (!isInGame)
             return;
 
-        if (pauseMenu.activeSelf)
+        if (objPauseUI.activeSelf)
         {
             DisplayPlayerUI();
-            GameManager.Instance.MouseLockHide();
-            isPauseOpened = false;
         }
         else
         {
             DisplayPauseMenu();
-            GameManager.Instance.MouseUnlockShow();
-            isPauseOpened = true;
         }
+    }
+
+    public void DisplayOptionsMenu()
+    {
+        HideAllMenus();
+        objOptionsUI.SetActive(true);
     }
 }

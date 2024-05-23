@@ -66,12 +66,12 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""CarHonk"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""f8e93273-c0c2-488b-8565-618872d2ab69"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -188,7 +188,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""21bf6037-4630-4f30-ae52-ba139f1fd332"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

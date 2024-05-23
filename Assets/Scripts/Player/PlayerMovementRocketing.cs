@@ -40,11 +40,16 @@ public class PlayerMovementRocketing : NetworkBehaviour
         rechargeTimer.OnEnd -= RechargeTimer_OnEnd;
     }
 
-    public void RocketForce()
+    [Rpc(SendTo.Server)]
+    public void RocketForceRpc()
+    {
+        rb.AddForce(transform.forward * rocketSpeed, ForceMode.Impulse);
+    }
+
+    public void RocketDisp()
     {
         rocketFuel.Decrease(Time.deltaTime * 5);
         UIManager.Instance.RocketUIScript.SetVal(rocketFuel.Percent);
-        rb.AddForce(transform.forward * rocketSpeed, ForceMode.Impulse);
     }
 
     [Rpc(SendTo.Everyone)]

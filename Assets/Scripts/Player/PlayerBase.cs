@@ -6,19 +6,27 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerMovement))]
 public class PlayerBase : NetworkBehaviour, ICheckpoint
 {
-    [SerializeField] private PlayerCamera cameraScript;
-    [SerializeField] private PlayerMovement movementScript;
-    [SerializeField] private CarFollower carFollowScript;
-    [SerializeField] private GameObject camPivot;
-    [SerializeField] private PlayerFlipOver flipUIScript;
-
     [Seperator]
     [SerializeField] private CustomTimer flippedOverTimer;
+    [SerializeField] private PlayerMovement movementScript;
+
+    [Seperator]
+    [SerializeField] private PlayerCamera cameraScript;
+    [SerializeField] private CarFollower carFollowScript;
+    [SerializeField] private GameObject camPivot;
+
+    [Seperator]
+    [SerializeField] private PlayerFlipOver flipUIScript;
+    [SerializeField] private PlayerAudio playerAudioScript;
+
 
     private NetworkVariable<int> currentCoins = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     private Vector3 lastCheckpointPos;
     private Checkpoint lastCheckpoint;
+
+    private bool isMoving;
+    private bool isHonking;
 
     public override void OnNetworkSpawn()
     {
@@ -44,7 +52,6 @@ public class PlayerBase : NetworkBehaviour, ICheckpoint
         flippedOverTimer.OnEnd -= FlipCar;
     }
 
-
     void Update()
     {
         if (IsOwner)
@@ -60,6 +67,33 @@ public class PlayerBase : NetworkBehaviour, ICheckpoint
                 movementScript.ForceStopRpc();
                 flipUIScript.ToggleFlipTextObj(false);
             }
+
+            isMoving = Mathf.Abs(InputManager.Instance.MoveVec.x) > 0 || Mathf.Abs(InputManager.Instance.MoveVec.y) > 0;
+            isHonking = InputManager.Instance.IsHonking;
+
+            UXCompsRpc(isMoving, isHonking);
+        }
+    }
+
+    [Rpc(SendTo.Server)]
+    private void UXCompsRpc(bool isMoving, bool isHonking)
+    {
+        if (isMoving)
+        {
+            playerAudioScript.PlayMoveSFXRpc();
+        }
+        else
+        {
+            playerAudioScript.StopMoveSFXRpc();
+        }
+
+        if (isHonking)
+        {
+            playerAudioScript.PlayCarHonkSFXRpc();
+        }
+        else
+        {
+            playerAudioScript.StopCarHonkSFXRpc();
         }
     }
 

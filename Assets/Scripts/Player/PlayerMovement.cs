@@ -47,7 +47,7 @@ public class PlayerMovement : NetworkBehaviour
     {
         if (isRocketing && rocketScript.CanRocket)
         {
-            rocketScript.RocketForce();
+            rocketScript.RocketForceRpc();
         }
     }
 

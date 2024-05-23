@@ -7,7 +7,10 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     [SerializeField] private Transform startingCheckpoint;
+    [SerializeField] private SettingsSO settingsObj;
+
     public Vector3 StartPoint => startingCheckpoint.position;
+    public SettingsSO SettingsObj => settingsObj;
 
     public void QuitApp()
     {
